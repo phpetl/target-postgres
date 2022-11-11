@@ -1,0 +1,20 @@
+{
+    "name": "phpetl/target-postgres",
+    "description": "Import data into Postgres",
+    "type": "library",
+    "license": "Apache-2.0",
+    "autoload": {
+        "psr-4": {
+            "PhpETL\\Target\\Postgres\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Chris Tankersley",
+            "email": "chris@ctankersley.com"
+        }
+    ],
+    "require": {
+        "aura/sqlquery": "^2.8"
+    }
+}

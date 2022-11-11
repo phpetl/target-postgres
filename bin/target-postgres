@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use PhpETL\Target\Postgres\Config;
+use PhpETL\Target\Postgres\Target;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$opts = getopt('', [
+    'config:',
+]);
+
+if (!array_key_exists('config', $opts)) {
+    echo "A config file is required" . PHP_EOL;
+    exit(1);
+}
+
+$config = Config::fromFile($opts['config']);
+$target = new Target($config);
+while ($line = fgets(STDIN)) {
+    $data = json_decode($line, true);
+
+    if ($data['type'] === 'SCHEMA') {
+        $target->setSchema($data);
+        continue;
+    }
+
+    if ($data['type'] === 'RECORD') {
+        $target->processRecord($data);
+        continue;
+    }
+}
