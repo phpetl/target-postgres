@@ -21,7 +21,9 @@ $config = Config::fromFile($opts['config']);
 $target = new Target($config);
 while ($line = fgets(STDIN)) {
     $data = json_decode($line, true);
-
+    if (json_last_error()) {
+        continue;
+    }
     if ($data['type'] === 'SCHEMA') {
         $target->setSchema($data);
         continue;

@@ -30,15 +30,13 @@ class Target
         foreach ($schema['schema']['properties'] as $columnName => $properties) {
             
             if (in_array($properties['type'], ['int', 'integer']) && in_array($columnName, $schema['key_properties'])) {
-                $sql .= $columnName . ' SERIAL';
+                $sql .= '"' . $columnName . '" SERIAL';
             } else {
-                $sql .= $columnName . ' ' . $this->buildColumnType($properties);
+                $sql .= '"' . $columnName . '" ' . $this->buildColumnType($properties);
             }
             $sql .= ',' . PHP_EOL;
         }
         $sql .= 'PRIMARY KEY(' . $schema['key_properties'][0] . '));';
-
-        var_dump($sql);
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
@@ -140,10 +138,11 @@ class Target
 
         if ($record['type'] === 'RECORD') {
             $factory = new QueryFactory('pgsql');
+            $keys = array_keys($record['record']);
             $insert = $factory->newInsert();
             $insert
                 ->into($this->currentSchema['tap_stream_id'])
-                ->cols(array_keys($record['record']))
+            ->cols($keys)
                 ->bindValues($record['record']);
             $stmt = $this->pdo->prepare($insert->getStatement());
 
